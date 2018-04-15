@@ -1,22 +1,54 @@
-from enum import Enum
-class ClassificationAlgorithm(Enum):
-    PERCEPTRON = 1
-    NAIVE_BAYES = 2
-    CUSTOM = 3
+from perceptron import PerceptronNetwork
 
-class ImageClassifier(object):
-    def __init__(self, algorithm):
-        self.dataPath = "data"
-        self.algorithm = algorithm
-        print self.algorithm
+# ----- DIGITS ----- #
+print "########## DIGITS ##########"
+digitWidth = 28
+digitHeight = 28
+digitY = list(range(0, 10))
 
-    def load(self, type):
-        print "loading data :{}/{}data".format(self.dataPath, type)
-        file = open("{}/{}data/traininglabels".format(self.dataPath, type), "r")
+# paths
+digitTrainingImagesPath = "data/digitdata/trainingimages"
+digitTrainingLabelsPath = "data/digitdata/traininglabels"
 
-    def train(self, percentage):
-        print "training {}% of data".format(percentage)
+digitTestImagesPath = "data/digitdata/testimages"
+digitTestLabelsPath = "data/digitdata/testlabels"
 
-imageClassifier = ImageClassifier(ClassificationAlgorithm.PERCEPTRON)
-imageClassifier.load("digit")
-imageClassifier.train(20)
+digitValidationImagesPath = "data/digitdata/validationimages"
+digitValidationLabelsPath = "data/digitdata/validationlabels"
+
+# perceptron classification
+digitPercep = PerceptronNetwork(digitWidth*digitHeight, digitY)
+digitPercep.train(digitWidth, digitHeight, digitTrainingImagesPath, digitTrainingLabelsPath)
+print "---------- test ----------"
+#test images
+digitPercep.test(digitWidth, digitHeight, digitTestImagesPath, digitTestLabelsPath)
+#validation images
+print "---------- validation ----------"
+digitPercep.test(digitWidth, digitHeight, digitValidationImagesPath, digitValidationLabelsPath)
+
+
+# ----- FACES ----- #
+print "########## FACES ##########"
+faceWidth = 60
+faceHeight = 70
+faceY = [0, 1]
+
+# paths
+faceTrainingImagesPath = "data/facedata/facedatatrain"
+faceTrainingLabelsPath = "data/facedata/facedatatrainlabels"
+
+faceTestImagesPath = "data/facedata/facedatatest"
+faceTestLabelsPath = "data/facedata/facedatatestlabels"
+
+faceValidationImagesPath = "data/facedata/facedatavalidation"
+faceValidationLabelsPath = "data/facedata/facedatavalidationlabels"
+
+# perceptron classification
+facePercep = PerceptronNetwork(faceWidth*faceHeight, faceY)
+facePercep.train(faceWidth, faceHeight, faceTrainingImagesPath, faceTrainingLabelsPath)
+print "---------- test ----------"
+#test images
+facePercep.test(faceWidth, faceHeight, faceTestImagesPath, faceTestLabelsPath)
+#validation images
+print "---------- validation ----------"
+facePercep.test(faceWidth, faceHeight, faceValidationImagesPath, faceValidationLabelsPath)
