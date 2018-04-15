@@ -6,16 +6,41 @@ class PerceptronNetwork(object):
         self.outputs = [0.0] * y
         self.weights = [[randint(0, 9)]*f]*y
 
-        print self.features
-        print self.outputs
-        print self.weights
+        self.images = []
+        self.labels = []
 
         #for i in range(0, len(self.weights)):
         #    print "features of output {}".format(i)
         #    print self.weights[i]
     
-    def loadTrainingData(self):
-        print "loading training data"
+    def loadTrainingData(self, imageWidth, imageHeight, imagesPath, labelsPath):
+        trainingImages = open(imagesPath, "r")
+
+        count = 0
+        currImage = []
+        for line in trainingImages:
+            for c in line:
+                if c == '+':
+                    currImage.append(0.5)
+                elif c == '#':
+                    currImage.append(1.0)
+                else:
+                    currImage.append(0)
+            count = count + 1
+            if count == 28:
+                self.images.append(currImage)
+                currImage = []
+                count = 0
+
+        trainingImages.close()
+
+        traininglabels = open(labelsPath, "r")
+
+        for line in traininglabels:
+            label = int(line)
+            self.labels.append(label)
+
+        traininglabels.close()
 
     def score(self, input, output):
         w = self.weights[output]
@@ -26,7 +51,24 @@ class PerceptronNetwork(object):
     def train(self, percentage=1.0):
         print "training {} of data".format(percentage)
 
-percep = PerceptronNetwork(2, 4)
-percep.loadTrainingData()
+# ----- DIGITS ----- #
+
+width = 28
+height = 28
+y = list(range(0, 10))
+
+# paths
+trainingImagesPath = "data/digitdata/trainingimages"
+trainingLabelsPath = "data/digitdata/traininglabels"
+
+testImagesPath = "data/digitdata/testimages"
+testLabelsPath = "data/digitdata/testlabels"
+
+validationImagesPath = "data/digitdata/validationimages"
+validationLabelsPath = "data/digitdata/validationlabels"
+
+# perceptron classification
+percep = PerceptronNetwork(width*height, len(y))
+percep.loadTrainingData(width, height, trainingImagesPath, trainingLabelsPath)
 percep.train(0.1)
-print percep.score([0.5, 1.0], 2)
+#print percep.score([0.5, 1.0], 2)
