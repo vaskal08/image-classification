@@ -1,46 +1,50 @@
 #digit images are 28x28 pixels
-from random import randint
+import random
+import operator
 class PerceptronNetwork(object):
     def __init__(self, f, y):
         self.features = [0.0] * f
-        self.outputs = [0.0] * y
-        self.weights = [[randint(0, 9)]*f]*y
-
-        self.images = []
-        self.labels = []
-
-        #for i in range(0, len(self.weights)):
-        #    print "features of output {}".format(i)
-        #    print self.weights[i]
+        self.outputs = y
+        self.weights = [[0]*f]*len(y)
     
-    def loadTrainingData(self, imageWidth, imageHeight, imagesPath, labelsPath):
-        trainingImages = open(imagesPath, "r")
+    def loadImages(self, imageWidth, imageHeight, imagesPath, labelsPath):
+        imageFile = open(imagesPath, "r")
 
         count = 0
         currImage = []
-        for line in trainingImages:
-            for c in line:
+        images = []
+        labels = []
+
+        factor = 2.0
+        plus = 0.5
+        pound = plus*factor
+
+        for line in imageFile:
+            for i in range(0, imageWidth):
+                c = line[i]
                 if c == '+':
-                    currImage.append(0.5)
+                    currImage.append(plus)
                 elif c == '#':
-                    currImage.append(1.0)
-                else:
+                    currImage.append(pound)
+                elif c == ' ':
                     currImage.append(0)
             count = count + 1
-            if count == 28:
-                self.images.append(currImage)
+            if count == imageHeight:
+                images.append(currImage)
                 currImage = []
                 count = 0
 
-        trainingImages.close()
+        imageFile.close()
 
-        traininglabels = open(labelsPath, "r")
+        labelsFile = open(labelsPath, "r")
 
-        for line in traininglabels:
+        for line in labelsFile:
             label = int(line)
-            self.labels.append(label)
+            labels.append(label)
 
-        traininglabels.close()
+        labelsFile.close()
+
+        return (images, labels)
 
     def score(self, input, output):
         w = self.weights[output]
@@ -48,27 +52,109 @@ class PerceptronNetwork(object):
         for i in range(0, len(w)):
             y = y + (w[i]*input[i])
         return y
-    def train(self, percentage=1.0):
-        print "training {} of data".format(percentage)
+
+    def train(self, imageWidth, imageHeight, imagesPath, labelsPath, percentage=1.0):
+        #load images
+        imagesAndLabels = self.loadImages(imageWidth, imageHeight, imagesPath, labelsPath)
+        images = imagesAndLabels[0]
+        labels = imagesAndLabels[1]
+
+        r = list(range(0, int(percentage*len(images))))
+        #random.shuffle(r)
+
+        for i in r:
+            image = images[i]
+            # function to map image to features
+            scores = []
+            for y in self.outputs:
+                score = self.score(image, y)
+                scores.append(score)
+            yPrime = scores.index(max(scores))
+            y = labels[i]
+            if yPrime != y:
+                self.weights[y] = map(operator.add, self.weights[y], image)
+                self.weights[yPrime] = map(operator.sub, self.weights[yPrime], image)
+
+        print "trained {} of data".format(percentage)
+
+    def test(self, imageWidth, imageHeight, imagesPath, labelsPath):
+        #load images
+        imagesAndLabels = self.loadImages(imageWidth, imageHeight, imagesPath, labelsPath)
+        images = imagesAndLabels[0]
+        labels = imagesAndLabels[1]
+
+        successes = 0
+        tests = len(images)
+        
+        r = list(range(0, len(images)))
+        #random.shuffle(r)
+
+        for i in r:
+            image = images[i]
+            
+            scores = []
+            for y in self.outputs:
+                score = self.score(image, y)
+                scores.append(score)
+            guess = scores.index(max(scores))
+            y = labels[i]
+            if guess == y:
+                successes = successes + 1
+
+        percentageCorrect = ((successes*1.0)/(tests*1.0))*100
+        print "{} successes".format(successes)
+        print "{} tests".format(tests)
+        print "correct {} percent of the time".format(percentageCorrect)
 
 # ----- DIGITS ----- #
-
-width = 28
-height = 28
-y = list(range(0, 10))
+print "########## DIGITS ##########"
+digitWidth = 28
+digitHeight = 28
+digitY = list(range(0, 10))
 
 # paths
-trainingImagesPath = "data/digitdata/trainingimages"
-trainingLabelsPath = "data/digitdata/traininglabels"
+digitTrainingImagesPath = "data/digitdata/trainingimages"
+digitTrainingLabelsPath = "data/digitdata/traininglabels"
 
-testImagesPath = "data/digitdata/testimages"
-testLabelsPath = "data/digitdata/testlabels"
+digitTestImagesPath = "data/digitdata/testimages"
+digitTestLabelsPath = "data/digitdata/testlabels"
 
-validationImagesPath = "data/digitdata/validationimages"
-validationLabelsPath = "data/digitdata/validationlabels"
+digitValidationImagesPath = "data/digitdata/validationimages"
+digitValidationLabelsPath = "data/digitdata/validationlabels"
 
 # perceptron classification
-percep = PerceptronNetwork(width*height, len(y))
-percep.loadTrainingData(width, height, trainingImagesPath, trainingLabelsPath)
-percep.train(0.1)
-#print percep.score([0.5, 1.0], 2)
+digitPercep = PerceptronNetwork(digitWidth*digitHeight, digitY)
+digitPercep.train(digitWidth, digitHeight, digitTrainingImagesPath, digitTrainingLabelsPath)
+print "---------- test ----------"
+#test images
+digitPercep.test(digitWidth, digitHeight, digitTestImagesPath, digitTestLabelsPath)
+#validation images
+print "---------- validation ----------"
+digitPercep.test(digitWidth, digitHeight, digitValidationImagesPath, digitValidationLabelsPath)
+
+
+# ----- FACES ----- #
+print "########## FACES ##########"
+faceWidth = 60
+faceHeight = 70
+faceY = [0, 1]
+
+# paths
+faceTrainingImagesPath = "data/facedata/facedatatrain"
+faceTrainingLabelsPath = "data/facedata/facedatatrainlabels"
+
+faceTestImagesPath = "data/facedata/facedatatest"
+faceTestLabelsPath = "data/facedata/facedatatestlabels"
+
+faceValidationImagesPath = "data/facedata/facedatavalidation"
+faceValidationLabelsPath = "data/facedata/facedatavalidationlabels"
+
+# perceptron classification
+facePercep = PerceptronNetwork(faceWidth*faceHeight, faceY)
+facePercep.train(faceWidth, faceHeight, faceTrainingImagesPath, faceTrainingLabelsPath)
+print "---------- test ----------"
+#test images
+facePercep.test(faceWidth, faceHeight, faceTestImagesPath, faceTestLabelsPath)
+#validation images
+print "---------- validation ----------"
+facePercep.test(faceWidth, faceHeight, faceValidationImagesPath, faceValidationLabelsPath)
