@@ -1,4 +1,5 @@
 from perceptron import PerceptronNetwork
+from bayes import NaiveBayes
 
 # ----- DIGITS ----- #
 print "########## DIGITS ##########"
@@ -19,13 +20,17 @@ digitValidationLabelsPath = "data/digitdata/validationlabels"
 # perceptron classification
 digitPercep = PerceptronNetwork(digitWidth*digitHeight, digitY)
 digitPercep.train(digitWidth, digitHeight, digitTrainingImagesPath, digitTrainingLabelsPath)
+digitBayes = NaiveBayes(digitWidth*digitHeight, 10, 2)
+digitBayes.train(digitWidth, digitHeight, digitTrainingImagesPath, digitTrainingLabelsPath)
+
 print "---------- test ----------"
 #test images
 digitPercep.test(digitWidth, digitHeight, digitTestImagesPath, digitTestLabelsPath)
+digitBayes.test(digitWidth, digitHeight, digitTestImagesPath, digitTestLabelsPath)
 #validation images
 print "---------- validation ----------"
 digitPercep.test(digitWidth, digitHeight, digitValidationImagesPath, digitValidationLabelsPath)
-
+digitBayes.test(digitWidth, digitHeight, digitValidationImagesPath, digitValidationLabelsPath)
 
 # ----- FACES ----- #
 print "########## FACES ##########"
@@ -46,9 +51,13 @@ faceValidationLabelsPath = "data/facedata/facedatavalidationlabels"
 # perceptron classification
 facePercep = PerceptronNetwork(faceWidth*faceHeight, faceY)
 facePercep.train(faceWidth, faceHeight, faceTrainingImagesPath, faceTrainingLabelsPath)
+faceBayes = NaiveBayes(faceWidth*faceHeight, 2, 2)
+faceBayes.train(faceWidth, faceHeight, faceTrainingImagesPath, faceTrainingLabelsPath)
 print "---------- test ----------"
 #test images
 facePercep.test(faceWidth, faceHeight, faceTestImagesPath, faceTestLabelsPath)
+faceBayes.test(faceWidth, faceHeight, faceTestImagesPath, faceTestLabelsPath)
 #validation images
 print "---------- validation ----------"
 facePercep.test(faceWidth, faceHeight, faceValidationImagesPath, faceValidationLabelsPath)
+faceBayes.test(faceWidth, faceHeight, faceValidationImagesPath, faceValidationLabelsPath)
