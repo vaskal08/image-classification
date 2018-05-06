@@ -1,49 +1,14 @@
 #digit images are 28x28 pixels
-import random
 import operator
 import math
+import imageload
 
 class NaiveBayes(object):
     def __init__(self, numberOfPixels, numberOfLabels, numberOfFeatureValue):
         self.numberOfLabels = numberOfLabels
         self.numberOfPixels = numberOfPixels
         self.numberOfFeatureValue = numberOfFeatureValue
-        self.conditionalProb = [[[0 for k in xrange(numberOfFeatureValue)] for j in xrange(numberOfLabels)] for i in xrange(numberOfPixels)] 
-    
-    def loadImages(self, imageWidth, imageHeight, imagesPath, labelsPath):
-        imageFile = open(imagesPath, "r")
-
-        count = 0
-        currImage = []
-        images = []
-        labels = []
-
-        for line in imageFile:
-            for i in range(0, imageWidth):
-                c = line[i]
-                if c == '+':
-                    currImage.append(1)
-                elif c == '#':
-                    currImage.append(1)
-                elif c == ' ':
-                    currImage.append(0)
-            count = count + 1
-            if count == imageHeight:
-                images.append(currImage)
-                currImage = []
-                count = 0
-
-        imageFile.close()
-
-        labelsFile = open(labelsPath, "r")
-
-        for line in labelsFile:
-            label = int(line)
-            labels.append(label)
-
-        labelsFile.close()
-
-        return (images, labels)
+        self.conditionalProb = [[[0 for k in xrange(numberOfFeatureValue)] for j in xrange(numberOfLabels)] for i in xrange(numberOfPixels)]
 
     def setPrior(self, labels):
         priorTmp = [0] * self.numberOfLabels
@@ -59,7 +24,7 @@ class NaiveBayes(object):
 
     def train(self, imageWidth, imageHeight, imagesPath, labelsPath, percentage=1.0):
         #load images
-        imagesAndLabels = self.loadImages(imageWidth, imageHeight, imagesPath, labelsPath)
+        imagesAndLabels = imageload.loadImages(imageWidth, imageHeight, imagesPath, labelsPath, True)
         images = imagesAndLabels[0]
         labels = imagesAndLabels[1]
         numberOfImages = int(percentage*len(images))
@@ -99,7 +64,7 @@ class NaiveBayes(object):
 
     def test(self, imageWidth, imageHeight, imagesPath, labelsPath):
         #load images
-        imagesAndLabels = self.loadImages(imageWidth, imageHeight, imagesPath, labelsPath)
+        imagesAndLabels = imageload.loadImages(imageWidth, imageHeight, imagesPath, labelsPath, False)
         images = imagesAndLabels[0]
         labels = imagesAndLabels[1]
 
@@ -117,6 +82,7 @@ class NaiveBayes(object):
                 successes = successes + 1
 
         percentageCorrect = ((successes*1.0)/(tests*1.0))*100
-        print "{} successes".format(successes)
-        print "{} tests".format(tests)
-        print "correct {} percent of the time".format(percentageCorrect)
+        #print "{} successes".format(successes)
+        #print "{} tests".format(tests)
+        #print "correct {} percent of the time".format(percentageCorrect)
+        return percentageCorrect

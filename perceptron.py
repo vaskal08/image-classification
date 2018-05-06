@@ -1,50 +1,11 @@
 #digit images are 28x28 pixels
-import random
 import operator
+import imageload
 class PerceptronNetwork(object):
     def __init__(self, f, y):
         self.features = [0.0] * f
         self.outputs = y
         self.weights = [[0]*f]*len(y)
-    
-    def loadImages(self, imageWidth, imageHeight, imagesPath, labelsPath):
-        imageFile = open(imagesPath, "r")
-
-        count = 0
-        currImage = []
-        images = []
-        labels = []
-
-        factor = 2.0
-        plus = 0.5
-        pound = plus*factor
-
-        for line in imageFile:
-            for i in range(0, imageWidth):
-                c = line[i]
-                if c == '+':
-                    currImage.append(plus)
-                elif c == '#':
-                    currImage.append(pound)
-                elif c == ' ':
-                    currImage.append(0)
-            count = count + 1
-            if count == imageHeight:
-                images.append(currImage)
-                currImage = []
-                count = 0
-
-        imageFile.close()
-
-        labelsFile = open(labelsPath, "r")
-
-        for line in labelsFile:
-            label = int(line)
-            labels.append(label)
-
-        labelsFile.close()
-
-        return (images, labels)
 
     def score(self, input, output):
         w = self.weights[output]
@@ -55,12 +16,11 @@ class PerceptronNetwork(object):
 
     def train(self, imageWidth, imageHeight, imagesPath, labelsPath, percentage=1.0):
         #load images
-        imagesAndLabels = self.loadImages(imageWidth, imageHeight, imagesPath, labelsPath)
+        imagesAndLabels = imageload.loadImages(imageWidth, imageHeight, imagesPath, labelsPath, True)
         images = imagesAndLabels[0]
         labels = imagesAndLabels[1]
 
         r = list(range(0, int(percentage*len(images))))
-        #random.shuffle(r)
 
         for i in r:
             image = images[i]
@@ -79,7 +39,7 @@ class PerceptronNetwork(object):
 
     def test(self, imageWidth, imageHeight, imagesPath, labelsPath):
         #load images
-        imagesAndLabels = self.loadImages(imageWidth, imageHeight, imagesPath, labelsPath)
+        imagesAndLabels = imageload.loadImages(imageWidth, imageHeight, imagesPath, labelsPath, False)
         images = imagesAndLabels[0]
         labels = imagesAndLabels[1]
 
@@ -87,7 +47,6 @@ class PerceptronNetwork(object):
         tests = len(images)
         
         r = list(range(0, len(images)))
-        #random.shuffle(r)
 
         for i in r:
             image = images[i]
@@ -102,6 +61,7 @@ class PerceptronNetwork(object):
                 successes = successes + 1
 
         percentageCorrect = ((successes*1.0)/(tests*1.0))*100
-        print "{} successes".format(successes)
-        print "{} tests".format(tests)
-        print "correct {} percent of the time".format(percentageCorrect)
+        #print "{} successes".format(successes)
+        #print "{} tests".format(tests)
+        #print "correct {} percent of the time".format(percentageCorrect)
+        return percentageCorrect
