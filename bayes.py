@@ -68,36 +68,34 @@ class NaiveBayes(object):
 
     def estimateParameters(self, images, labels, numberOfImages):
         self.setPrior(labels)
-        print self.prior
         
         total = [[0 for j in xrange(self.numberOfLabels)] for i in xrange(self.numberOfPixels)]
-
-        for i in range(0, numberOfImages):
+        
+        for i in range(0, numberOfImages): #TODO
             image = images[i]
             curLabel = labels[i]
             for j in range(0, len(image)):
                 featureVal = image[j]
                 self.conditionalProb[j][curLabel][featureVal] = self.conditionalProb[j][curLabel][featureVal] + 1
                 total[j][curLabel] = total[j][curLabel] + 1
-        
+                
         for i in range(0, self.numberOfPixels):
             for j in range(0, self.numberOfLabels):
                 for k in range(0, self.numberOfFeatureValue):
                     self.conditionalProb[i][j][k] = self.conditionalProb[i][j][k] * 1.0 / total[i][j]
-
+                
     def calculateLogJointProbabilities(self, image):
         res = [0.0] * self.numberOfLabels
         
-        #for i in range(0, self.numberOfPixels):   
-        # TODO 
-        return
-    
-    def classify(self, testData):
-        guesses = []
-        for datum in testData:
-            posterior = self.calculateLogJointProbabilities(datum)
-            guesses.append(posterior.index(max(posterior)))        
-        return guesses
+        for i in range(0, self.numberOfLabels):
+            res[i] = math.log(self.prior[i])
+            for j in range(0, self.numberOfPixels):
+                featureVal = image[j]
+                if self.conditionalProb[j][i][featureVal] == 0 or res[i] == float('-inf'):
+                    res[i] = float('-inf')
+                else:
+                    res[i] = res[i] + math.log(self.conditionalProb[j][i][featureVal])
+        return res
 
     def test(self, imageWidth, imageHeight, imagesPath, labelsPath):
         #load images
@@ -112,7 +110,11 @@ class NaiveBayes(object):
         
         for i in r:
             image = images[i]
-            #TODO
+            posterior = self.calculateLogJointProbabilities(image)
+            guess = posterior.index(max(posterior))
+            y = labels[i]
+            if guess == y:
+                successes = successes + 1
 
         percentageCorrect = ((successes*1.0)/(tests*1.0))*100
         print "{} successes".format(successes)
