@@ -25,7 +25,8 @@ This design allows for the classifier to increase the weights corresponding to t
   xlabel={Amount of data (\%)},
   ylabel={Mean Accuracy (\%)},
   xmin=0, xmax=100,
-  ymin=50, ymax=90
+  ymin=50, ymax=90,
+  legend pos=outer north east
   ]
 
   \addplot[
@@ -50,6 +51,7 @@ This design allows for the classifier to increase the weights corresponding to t
 \begin{tikzpicture}
 \begin{axis}[
   title={Digits Times}, 
+  legend pos=outer north east,
   xlabel={Amount of data (\%)},
   ylabel={Time (Seconds)},
   xmin=0, xmax=100,
@@ -77,6 +79,7 @@ This design allows for the classifier to increase the weights corresponding to t
 
 \begin{tikzpicture}
 \begin{axis}[
+  legend pos=outer north east,
   title={Digits Std Dev}, 
   xlabel={Amount of data (\%)},
   ylabel={Std Deviation},
@@ -106,6 +109,7 @@ This design allows for the classifier to increase the weights corresponding to t
 \subsection{Faces}
 \begin{tikzpicture}
 \begin{axis}[
+  legend pos=outer north east,
   title={Faces Times}, 
   xlabel={Amount of data (\%)},
   ylabel={Time (Seconds)},
@@ -135,6 +139,7 @@ This design allows for the classifier to increase the weights corresponding to t
 
 \begin{tikzpicture}
 \begin{axis}[
+  legend pos=outer north east,
   title={Faces Means}, 
   xlabel={Amount of data (\%)},
   ylabel={Mean Accuracy (\%)},
@@ -163,6 +168,7 @@ This design allows for the classifier to increase the weights corresponding to t
 
 \begin{tikzpicture}
 \begin{axis}[
+  legend pos=outer north east,
   title={Faces Std Dev}, 
   xlabel={Amount of data (\%)},
   ylabel={Std Deviation},
