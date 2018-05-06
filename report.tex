@@ -110,6 +110,35 @@ This design allows for the classifier to increase the weights corresponding to t
 \begin{tikzpicture}
 \begin{axis}[
   legend pos=outer north east,
+  title={Faces Means}, 
+  xlabel={Amount of data (\%)},
+  ylabel={Mean Accuracy (\%)},
+  xmin=0, xmax=100,
+  ymin=50, ymax=90
+  ]
+
+  \addplot[
+    color=blue,
+    mark=square
+  ]
+  coordinates {
+  (10,69.3333333333) (20,70.9333333333) (30,75.0666666667) (40,80.5333333333) (50,75.3333333333) (60,76.5333333333) (70,82.1333333333) (80,79.4666666667) (90,82.1333333333) (100,81.8666666667) 
+  };
+  \addplot[
+    color=red,
+    mark=square
+  ]
+  coordinates {
+  (10,51.3333333333) (20,55.2) (30,75.6) (40,85.4666666667) (50,86.2666666667) (60,87.3333333333) (70,87.7333333333) (80,87.7333333333) (90,88.8) (100,88.6666666667) 
+  };
+  \legend{Perceptron, Naive Bayes}
+
+\end{axis}
+\end{tikzpicture}
+
+\begin{tikzpicture}
+\begin{axis}[
+  legend pos=outer north east,
   title={Faces Times}, 
   xlabel={Amount of data (\%)},
   ylabel={Time (Seconds)},
@@ -131,35 +160,6 @@ This design allows for the classifier to increase the weights corresponding to t
   ]
   coordinates {
   (10,0.299941968918) (20,0.321775722504) (30,0.375074672699) (40,0.604894018173) (50,0.542614173889) (60,0.450457572937) (70,0.482290029526) (80,0.513176774979) (90,0.533605384827) (100,0.592084550858) 
-  };
-  \legend{Perceptron, Naive Bayes}
-
-\end{axis}
-\end{tikzpicture}
-
-\begin{tikzpicture}
-\begin{axis}[
-  legend pos=outer north east,
-  title={Faces Means}, 
-  xlabel={Amount of data (\%)},
-  ylabel={Mean Accuracy (\%)},
-  xmin=0, xmax=100,
-  ymin=50, ymax=90
-  ]
-
-  \addplot[
-    color=blue,
-    mark=square
-  ]
-  coordinates {
-  (10,69.3333333333) (20,70.9333333333) (30,75.0666666667) (40,80.5333333333) (50,75.3333333333) (60,76.5333333333) (70,82.1333333333) (80,79.4666666667) (90,82.1333333333) (100,81.8666666667) 
-  };
-  \addplot[
-    color=red,
-    mark=square
-  ]
-  coordinates {
-  (10,51.3333333333) (20,55.2) (30,75.6) (40,85.4666666667) (50,86.2666666667) (60,87.3333333333) (70,87.7333333333) (80,87.7333333333) (90,88.8) (100,88.6666666667) 
   };
   \legend{Perceptron, Naive Bayes}
 
