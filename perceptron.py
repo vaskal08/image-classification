@@ -36,7 +36,14 @@ class PerceptronNetwork(object):
                 self.weights[yPrime] = map(operator.sub, self.weights[yPrime], image)
 
         print "trained {} of data".format(percentage)
-
+    def test_one(self, imageWidth, imageHeight, image):
+        scores = []
+        imageValues = imageload.imageToValues(image, imageWidth, imageHeight)
+        for y in self.outputs:
+            score = self.score(imageValues, y)
+            scores.append(score)
+        guess = scores.index(max(scores))
+        return guess
     def test(self, imageWidth, imageHeight, imagesPath, labelsPath):
         #load images
         imagesAndLabels = imageload.loadImages(imageWidth, imageHeight, imagesPath, labelsPath, False)

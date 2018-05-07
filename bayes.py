@@ -61,7 +61,12 @@ class NaiveBayes(object):
                 else:
                     res[i] = res[i] + math.log(self.conditionalProb[j][i][featureVal])
         return res
-
+    def test_one(self, imageWidth, imageHeight, image):
+        imageValues = imageload.imageToValues(image, imageWidth, imageHeight)
+        posterior = self.calculateLogJointProbabilities(imageValues)
+        guess = posterior.index(max(posterior))
+        
+        return guess
     def test(self, imageWidth, imageHeight, imagesPath, labelsPath):
         #load images
         imagesAndLabels = imageload.loadImages(imageWidth, imageHeight, imagesPath, labelsPath, False)
